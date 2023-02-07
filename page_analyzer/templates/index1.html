@@ -1,1 +1,25 @@
-Hey!
+{% extends "base.html" %}
+{% block title %}Анализатор страниц{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+  <main class="flex-grow-1">
+    <div class="container-lg border mt-3">
+        <div class="container text-center border">
+            <div class="row border">
+              <div class="col-sm-8 border">col-sm-8</div>
+              <div class="col-sm-4 border">col-sm-4</div>
+            </div>
+            <div class="row">
+              <div class="col-sm">col-sm</div>
+              <div class="col-sm">col-sm</div>
+              <div class="col-sm">col-sm</div>
+            </div>
+          </div>
+    </div>
+  </main>
+{% endblock %}
+{% block footer %}
+    {{ super() }}
+{% endblock %}
