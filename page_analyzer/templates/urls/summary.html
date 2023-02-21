@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Анализатор страниц{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<main class="flex-grow-1">
+    <div class="container-lg mt-3">
+        <h1>Сайты</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-nowrap" data-test="urls">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Последняя проверка</th>
+                        <th>Код ответа</th>
+                    </tr>
+                    {% for page in pages %}
+                    <tr>
+                        <td>{{ page.id }}</td>
+                        <td><a href="{{ url_for('get_url_page', id=page.id) }}">{{ page.name }}</a></td>
+                        <td>{{ page.created_at }} TODO</td>
+                        <td>TODO</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}
+{% block footer %}
+{{ super() }}
+{% endblock %}

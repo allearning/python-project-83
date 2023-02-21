@@ -1,15 +1,65 @@
-from flask import Flask, render_template
+import os
+from flask import Flask, flash, get_flashed_messages, redirect, request, render_template, url_for
+from page_analyzer.url_utils import validate_url, cut_netloc
+from dotenv import load_dotenv
 
+from page_analyzer.seopage import SEOPage
+from page_analyzer.connector import Connector
 
-
+load_dotenv()
 app = Flask(__name__)
+DATABASE_URL = os.getenv('DATABASE_URL')
+app.secret_key = os.getenv('SECRET_KEY')
+try:
+    db = Connector(DATABASE_URL)
+except Exception as err:
+    print(err)
+    print('Cannot connect to database')
+    print(DATABASE_URL)
 
 
 @app.route('/')
-def hello_world():
-    return render_template('index.html')
+def get_index():
+    messages = get_flashed_messages(with_categories=True)
+    return render_template('index.html', messages=messages)
 
 
-@app.route('/index1')
-def base():
-    return render_template('index1.html')
+@app.get('/urls/<id>')
+def get_url_page(id):
+    messages = get_flashed_messages(with_categories=True)
+    page = db.get_page_by_id(id)
+    return render_template('urls/index.html', page=page, messages=messages)
+
+
+@app.post('/urls')
+def post_add_page():
+    #check page address
+    #if bad redirect to '/' with error message
+    #if not in db
+    #   add to db
+    #redirect to page of page
+    address = request.form.get('url')
+    errors = validate_url(address)
+    if errors:
+        for error in errors:
+            flash(error, category='alert-danger')
+        messages = get_flashed_messages(with_categories=True)
+        return render_template('index.html', messages=messages, url_text=address), 402
+    
+    address = cut_netloc(address)
+    page = db.get_page(address)
+    if page:
+        flash("Страница уже существует", category='alert-info')
+        return redirect(url_for('get_url_page', id=page.id), code=302)
+
+    db.add_page(SEOPage(address))
+    page = db.get_page(address)
+    flash("Страница успешно добавлена", category='alert-success')
+    return redirect(url_for('get_url_page', id=page.id), code=302)
+
+
+@app.get('/urls')
+def get_urls():
+    messages = get_flashed_messages(with_categories=True)
+    pages = db.get_pages()
+    return render_template('urls/summary.html', pages=pages, messages=messages)
