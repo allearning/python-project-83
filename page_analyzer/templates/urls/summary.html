@@ -18,10 +18,10 @@
                     </tr>
                     {% for page in pages %}
                     <tr>
-                        <td>{{ page.id }}</td>
-                        <td><a href="{{ url_for('get_url_page', id=page.id) }}">{{ page.name }}</a></td>
-                        <td>{{ page.created_at }} TODO</td>
-                        <td>TODO</td>
+                        <td>{{ page.page_id }}</td>
+                        <td><a href="{{ url_for('get_url_page', page_id=page.page_id) }}">{{ page.name }}</a></td>
+                        <td>{{ page.checks[0].created_at }}</td>
+                        <td>{{ page.checks[0].status_code }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

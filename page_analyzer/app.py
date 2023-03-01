@@ -24,10 +24,11 @@ def get_index():
     return render_template('index.html', messages=messages)
 
 
-@app.get('/urls/<id>')
-def get_url_page(id):
+@app.get('/urls/<page_id>')
+def get_url_page(page_id):
     messages = get_flashed_messages(with_categories=True)
-    page = db.get_page_by_id(id)
+    page = db.get_page_by_id(page_id)
+    page.checks = db.get_checks_for_page(page.page_id)
     return render_template('urls/index.html', page=page, messages=messages)
 
 
@@ -45,21 +46,32 @@ def post_add_page():
             flash(error, category='alert-danger')
         messages = get_flashed_messages(with_categories=True)
         return render_template('index.html', messages=messages, url_text=address), 402
-    
+
     address = cut_netloc(address)
     page = db.get_page(address)
     if page:
         flash("Страница уже существует", category='alert-info')
-        return redirect(url_for('get_url_page', id=page.id), code=302)
+        return redirect(url_for('get_url_page', page_id=page.page_id), code=302)
 
     db.add_page(SEOPage(address))
     page = db.get_page(address)
     flash("Страница успешно добавлена", category='alert-success')
-    return redirect(url_for('get_url_page', id=page.id), code=302)
+    return redirect(url_for('get_url_page', page_id=page.page_id), code=302)
 
 
 @app.get('/urls')
 def get_urls():
     messages = get_flashed_messages(with_categories=True)
     pages = db.get_pages()
+    for page in pages:
+        page.checks.append(db.get_last_check(page.page_id))
     return render_template('urls/summary.html', pages=pages, messages=messages)
+
+
+@app.post('/urls/<page_id>/checks')
+def post_check_page(page_id):
+    page = db.get_page_by_id(page_id)
+    new_check = page.check()
+    db.add_check(new_check)
+    flash("Страница успешно проверена", category='alert-success')
+    return redirect(url_for('get_url_page', page_id=page_id), code=302)

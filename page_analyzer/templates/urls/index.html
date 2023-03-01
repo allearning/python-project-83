@@ -6,13 +6,13 @@
 {% block content %}
 <main class="flex-grow-1">
     <div class="container-lg mt-3">
-        <h1>Сайт: {{ page.name}}</h1>
+        <h1>Сайт: {{ page.name }}</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-nowrap" data-test="url">
                 <tbody>
                     <tr>
                         <td>ID</td>
-                        <td>{{ page.id }}</td>
+                        <td>{{ page.page_id }}</td>
                     </tr>
                     <tr>
                         <td>Имя</td>
@@ -26,7 +26,7 @@
             </table>
         </div>
         <h2 class="mt-5 mb-3">Проверки</h2>
-        <form method="post" action="/urls/1/checks">
+        <form method="post" action="{{ url_for('post_check_page', page_id=page.page_id) }}">
             <input type="submit" class="btn btn-primary" value="Запустить проверку">
         </form>
         <div>
@@ -43,11 +43,11 @@
                     {% for check in page.checks %}
                     <tr>
                         <td>{{ check.id }}</td>
-                        <td>{{ check.res_code }}</td>
+                        <td>{{ check.status_code }}</td>
                         <td>{{ check.h1 }}</td>
                         <td>{{ check.title }}</td>
                         <td>{{ check.description }}</td>
-                        <td>{{ check.date }}</td>
+                        <td>{{ check.created_at }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

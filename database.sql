@@ -14,3 +14,15 @@ INSERT INTO urls (name, created_at) VALUES
 ('Robb', '2018-11-10'),
 ('Brienne', '2018-11-28'),
 ('Tirion', '2018-11-23');
+
+
+DROP TABLE IF EXISTS url_checks;
+CREATE TABLE url_checks (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    url_id bigint REFERENCES urls (id),
+    status_code integer,
+    h1 varchar(255),
+    title varchar(255),
+    description varchar(255),
+    created_at date
+);
