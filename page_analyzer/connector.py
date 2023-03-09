@@ -3,7 +3,6 @@ import psycopg2
 from page_analyzer.seopage import SEOPage
 from page_analyzer.seocheck import SEOCheck
 
-
 class Connector:
     def __init__(self, connection_sring) -> None:
         self.connection = psycopg2.connect(connection_sring)
@@ -28,7 +27,7 @@ class Connector:
             except psycopg2.ProgrammingError as error:
                 print(error)
                 return None
-            page = SEOPage(*data)
+            page = SEOPage(*data) if data else None
             return page
 
     def get_pages(self):

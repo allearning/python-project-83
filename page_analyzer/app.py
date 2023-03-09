@@ -28,6 +28,8 @@ def get_index():
 def get_url_page(page_id):
     messages = get_flashed_messages(with_categories=True)
     page = db.get_page_by_id(page_id)
+    if not page:
+        return render_template('notfound.html', messages=messages), 404
     page.checks = db.get_checks_for_page(page.page_id)
     return render_template('urls/index.html', page=page, messages=messages)
 
@@ -73,5 +75,5 @@ def post_check_page(page_id):
     page = db.get_page_by_id(page_id)
     new_check = page.check()
     db.add_check(new_check)
-    flash("Страница успешно проверена", category='alert-success')
+    flash('Страница успешно проверена', category='alert-success')
     return redirect(url_for('get_url_page', page_id=page_id), code=302)
