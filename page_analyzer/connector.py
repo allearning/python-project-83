@@ -4,9 +4,8 @@ from page_analyzer.seopage import SEOPage
 from page_analyzer.seocheck import SEOCheck
 
 class Connector:
-    def __init__(self, connection_sring) -> None:
-        self.connection = psycopg2.connect(connection_sring)
-        self.connection.autocommit = True
+    def __init__(self, db) -> None:
+        self.connection = db
 
     def get_page(self, name: str):
         with self.connection.cursor() as cursor:

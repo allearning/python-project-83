@@ -5,17 +5,16 @@ from dotenv import load_dotenv
 
 from page_analyzer.seopage import SEOPage
 from page_analyzer.connector import Connector
+from page_analyzer import db as database
+
 
 load_dotenv()
 app = Flask(__name__)
 DATABASE_URL = os.getenv('DATABASE_URL')
 app.secret_key = os.getenv('SECRET_KEY')
-try:
-    db = Connector(DATABASE_URL)
-except Exception as err:
-    print(err)
-    print('Cannot connect to database')
-    print(DATABASE_URL)
+app.config.from_mapping(DATABASE=DATABASE_URL)
+with app.app_context():
+    database.init_app(app)
 
 
 @app.route('/')
@@ -26,6 +25,7 @@ def get_index():
 
 @app.get('/urls/<page_id>')
 def get_url_page(page_id):
+    db = Connector(database.get_db())
     messages = get_flashed_messages(with_categories=True)
     page = db.get_page_by_id(page_id)
     if not page:
@@ -41,6 +41,7 @@ def post_add_page():
     #if not in db
     #   add to db
     #redirect to page of page
+    db = Connector(database.get_db())
     address = request.form.get('url')
     errors = validate_url(address)
     if errors:
@@ -63,6 +64,7 @@ def post_add_page():
 
 @app.get('/urls')
 def get_urls():
+    db = Connector(database.get_db())
     messages = get_flashed_messages(with_categories=True)
     pages = db.get_pages()
     for page in pages:
@@ -72,6 +74,7 @@ def get_urls():
 
 @app.post('/urls/<page_id>/checks')
 def post_check_page(page_id):
+    db = Connector(database.get_db())
     page = db.get_page_by_id(page_id)
     new_check = page.check()
     db.add_check(new_check)
