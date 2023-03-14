@@ -76,7 +76,10 @@ def get_urls():
 def post_check_page(page_id):
     db = Connector(database.get_db())
     page = db.get_page_by_id(page_id)
-    new_check = page.check()
-    db.add_check(new_check)
-    flash('Страница успешно проверена', category='alert-success')
+    try:
+        new_check = page.check()
+        db.add_check(new_check)
+        flash('Страница успешно проверена', category='alert-success')
+    except:
+        flash('Произошла ошибка при проверке', category='alert-danger')
     return redirect(url_for('get_url_page', page_id=page_id), code=302)
