@@ -13,7 +13,8 @@ INSERT INTO urls (name, created_at) VALUES
 ('Arya', '2018-11-18'),
 ('Robb', '2018-11-10'),
 ('Brienne', '2018-11-28'),
-('Tirion', '2018-11-23');
+('Tirion', '2018-11-23'),
+('https://www.google.com', '2019-11-23');
 
 
 DROP TABLE IF EXISTS url_checks;

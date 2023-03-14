@@ -59,18 +59,13 @@ def test_add_page_correct(client):
     assert 'https://flask.palletsprojects.com' in str(response.data)
 
     
-def test_post_check_page(client):
-    response = client.post('/urls/1/checks', data={
-        'url': 'https://flask.palletsprojects.com/en/2.2.x/testing/',
-    }, follow_redirects=True)
+def test_post_check_page_bad(client):
+    response = client.post('/urls/1/checks', follow_redirects=True)
+    assert response.status_code == 200
+    assert 'Произошла ошибка при проверке' in response.text
+    
+def test_post_check_page_correct(client):
+    response = client.post('/urls/8/checks', follow_redirects=True)
     assert response.status_code == 200
     assert 'Страница успешно проверена' in response.text
-""" 
-Метод	Маршрут	Шаблон	Описание
-GET	/schools	schools/index.html	Список школ
-GET	/schools/{id}	schools/show.html	Информация о школе
-GET	/schools/new	schools/new.html	Форма создания новой школы
-POST	/schools		Создание новой школы
-GET	/schools/{id}/edit	schools/edit.html	Форма редактирования школы
-PATCH/PUT	/schools/{id}		Обновление школы
-DELETE	/schools/{id}		Удаление школы """
+
