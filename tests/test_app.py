@@ -68,4 +68,3 @@ def test_post_check_page_correct(client):
     response = client.post('/urls/8/checks', follow_redirects=True)
     assert response.status_code == 200
     assert 'Страница успешно проверена' in response.text
-

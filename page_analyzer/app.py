@@ -80,6 +80,7 @@ def post_check_page(page_id):
         new_check = page.check()
         db.add_check(new_check)
         flash('Страница успешно проверена', category='alert-success')
-    except:
+    except Exception as e:
+        print(e)
         flash('Произошла ошибка при проверке', category='alert-danger')
     return redirect(url_for('get_url_page', page_id=page_id), code=302)

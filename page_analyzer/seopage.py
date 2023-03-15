@@ -1,5 +1,6 @@
 import datetime
 import requests
+from bs4 import BeautifulSoup
 from page_analyzer.seocheck import SEOCheck
 
 class SEOPage:
@@ -13,25 +14,15 @@ class SEOPage:
 
     def check(self):
         r = requests.get(self.name)
-        content = r.text
 
-        try:
-            title_start = content.index('<title>') + len('<title>')
-            title_end = content.index('</title>')
-            title = content[title_start:title_end]
-        except ValueError:
-            title = ''
-        try:
-            h1_start = content.index('<h1>') + len('<h1>')
-            h1_end = content.index('</h1>')
-            h1 = content[h1_start:h1_end]
-        except ValueError:
-            h1 = ''
+        soup = BeautifulSoup(r.text, 'html.parser')
+        title = soup.find('title')
+        title = title.string if title else ''
 
-        try:
-            descr_start = content.index('<meta name="description" content="') + len('<meta name="description" content="')
-            descr_end = content.index('"', descr_start)
-            descr = content[descr_start:descr_end]
-        except ValueError:
-            descr = ''
+        h1 = soup.find('h1')
+        h1 = h1.string if h1 else ''
+
+        descr = soup.find('meta', attrs={'name': 'description'})
+        descr = descr['content'] if descr else ''
+
         return SEOCheck(self.page_id, r.status_code, h1, title, descr)

@@ -7,7 +7,7 @@ def get_db():
     if 'db' not in g:
         g.db = psycopg2.connect(current_app.config['DATABASE'])
         g.db.autocommit = True
-
+        
     return g.db
 
 
