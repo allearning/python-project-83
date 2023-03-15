@@ -32,14 +32,14 @@
         <div>
             <table class="table table-bordered table-hover mt-2" data-test="checks">
                 <tbody>
-                    <tr>
+                    <thead>
                         <th>ID</th>
                         <th>Код ответа</th>
                         <th>h1</th>
                         <th>title</th>
                         <th>description</th>
                         <th>Дата создания</th>
-                    </tr>
+                    </thead>
                     {% for check in page.checks %}
                     <tr>
                         <td>{{ check.id }}</td>

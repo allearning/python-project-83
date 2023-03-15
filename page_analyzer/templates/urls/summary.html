@@ -10,12 +10,12 @@
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-nowrap" data-test="urls">
                 <tbody>
-                    <tr>
+                    <thead>
                         <th>ID</th>
                         <th>Имя</th>
                         <th>Последняя проверка</th>
                         <th>Код ответа</th>
-                    </tr>
+                    </thead>
                     {% for page in pages %}
                     <tr>
                         <td>{{ page.page_id }}</td>
