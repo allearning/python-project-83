@@ -31,4 +31,7 @@ package-install:
 publish:
 	poetry publish --dry-run
 
+init_db:
+	poetry run python page_analyzer/scripts/migrations/init_db.py
+
 .PHONY: install test lint selfcheck check build
