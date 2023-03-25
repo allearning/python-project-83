@@ -1,5 +1,5 @@
 import datetime
-
+from http import HTTPStatus
 import requests
 from bs4 import BeautifulSoup
 from page_analyzer.seocheck import SEOCheck
@@ -20,6 +20,8 @@ class SEOPage:
 
     def check(self):
         r = requests.get(self.name)
+        if r.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
+            raise Exception('Response code 500')
 
         soup = BeautifulSoup(r.text, 'html.parser')
         title = soup.find('title')
