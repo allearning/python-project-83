@@ -20,7 +20,7 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
-    with open('database.sql') as f:
+    with current_app.open_resource('database.sql') as f:
         with db.cursor() as cursor:
             cursor.execute(f.read())
 

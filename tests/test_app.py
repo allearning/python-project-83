@@ -2,14 +2,15 @@ from http import HTTPStatus
 
 import pytest
 from page_analyzer.app import app
-from page_analyzer.scripts.migrations.init_db import scheme_from_file
+from page_analyzer.db import init_db
 
 
 @pytest.fixture()
 def test_app():
 
     # other setup can go here
-    scheme_from_file()
+    with app.app_context():
+        init_db()
     yield app
     # clean up / reset resources here
 

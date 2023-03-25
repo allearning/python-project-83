@@ -5,10 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
-user = os.getenv('PGUSER')
-pwd = os.getenv('PGPASSWORD')
-host = os.getenv('PGHOST')
-port = os.getenv('PGPORT')
 PDB_URL = os.getenv('SERVICEDB_URL')
 DB_NAME = os.getenv('PGDATABASE')
 
