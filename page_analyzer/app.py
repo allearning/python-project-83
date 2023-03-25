@@ -31,7 +31,7 @@ def get_index():
     return render_template('index.html', messages=messages)
 
 
-@app.get('/urls/<page_id>')
+@app.get('/urls/<int:page_id>')
 def get_url_page(page_id):
     db = Connector(database.get_db())
     messages = get_flashed_messages(with_categories=True)
@@ -85,7 +85,7 @@ def get_urls():
     return render_template('urls/summary.html', pages=pages, messages=messages)
 
 
-@app.post('/urls/<page_id>/checks')
+@app.post('/urls/<int:page_id>/checks')
 def post_check_page(page_id):
     db = Connector(database.get_db())
     page = db.get_page_by_id(page_id)
