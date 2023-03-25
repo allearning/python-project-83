@@ -31,12 +31,18 @@ def test_urls_get(client):
 
 
 def test_get_url_page_correct(client):
+    client.post('/urls', data={
+        'url': 'https://flask.palletsprojects.com/en/2.2.x/testing/',
+    }, follow_redirects=True)
     response = client.get("/urls/1")
     assert response.status_code == HTTPStatus.OK
 
 
 def test_get_url_page_wrong(client):
-    response = client.get("/urls/100")
+    client.post('/urls', data={
+        'url': 'https://flask.palletsprojects.com/en/2.2.x/testing/',
+    }, follow_redirects=True)
+    response = client.get("/urls/2")
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
@@ -63,12 +69,18 @@ def test_add_page_correct(client):
 
 
 def test_post_check_page_bad(client):
+    response = client.post('/urls', data={
+        'url': 'http://wrong.com',
+    }, follow_redirects=True)
     response = client.post('/urls/1/checks', follow_redirects=True)
     assert response.status_code == HTTPStatus.OK
     assert 'Произошла ошибка при проверке' in response.text
 
 
 def test_post_check_page_correct(client):
-    response = client.post('/urls/8/checks', follow_redirects=True)
+    response = client.post('/urls', data={
+        'url': 'https://flask.palletsprojects.com/en/2.2.x/testing/',
+    }, follow_redirects=True)
+    response = client.post('/urls/1/checks', follow_redirects=True)
     assert response.status_code == HTTPStatus.OK
     assert 'Страница успешно проверена' in response.text
