@@ -1,4 +1,5 @@
 import os
+from http import HTTPStatus
 
 from dotenv import load_dotenv
 from flask import (
@@ -36,7 +37,8 @@ def get_url_page(page_id):
     messages = get_flashed_messages(with_categories=True)
     page = db.get_page_by_id(page_id)
     if not page:
-        return render_template('notfound.html', messages=messages), 404
+        return (render_template('notfound.html', messages=messages),
+                HTTPStatus.NOT_FOUND)
     page.checks = db.get_checks_for_page(page.page_id)
     return render_template('urls/index.html', page=page, messages=messages)
 
@@ -55,19 +57,22 @@ def post_add_page():
         for error in errors:
             flash(error, category='alert-danger')
         messages = get_flashed_messages(with_categories=True)
-        return render_template('index.html', messages=messages,
-                               url_text=address), 402
+        return (render_template('index.html', messages=messages,
+                                url_text=address),
+                HTTPStatus.UNPROCESSABLE_ENTITY)
 
     address = cut_netloc(address)
     page = db.get_page(address)
     if page:
         flash('Страница уже существует', category='alert-info')
-        return redirect(url_for('get_url_page', page_id=page.page_id), code=302)
+        return redirect(url_for('get_url_page', page_id=page.page_id),
+                        code=HTTPStatus.FOUND)
 
     db.add_page(SEOPage(address))
     page = db.get_page(address)
     flash('Страница успешно добавлена', category='alert-success')
-    return redirect(url_for('get_url_page', page_id=page.page_id), code=302)
+    return redirect(url_for('get_url_page', page_id=page.page_id),
+                    code=HTTPStatus.FOUND)
 
 
 @app.get('/urls')
@@ -91,4 +96,5 @@ def post_check_page(page_id):
     except Exception as e:
         print(e)
         flash('Произошла ошибка при проверке', category='alert-danger')
-    return redirect(url_for('get_url_page', page_id=page_id), code=302)
+    return redirect(url_for('get_url_page', page_id=page_id),
+                    code=HTTPStatus.FOUND)
