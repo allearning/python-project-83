@@ -1,12 +1,19 @@
 import os
-from flask import Flask, flash, get_flashed_messages, redirect, request, render_template, url_for
-from page_analyzer.url_utils import validate_url, cut_netloc
+
 from dotenv import load_dotenv
-
-from page_analyzer.seopage import SEOPage
-from page_analyzer.connector import Connector
+from flask import (
+    Flask,
+    flash,
+    get_flashed_messages,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from page_analyzer import db as database
-
+from page_analyzer.connector import Connector
+from page_analyzer.seopage import SEOPage
+from page_analyzer.url_utils import cut_netloc, validate_url
 
 load_dotenv()
 app = Flask(__name__)
@@ -36,11 +43,11 @@ def get_url_page(page_id):
 
 @app.post('/urls')
 def post_add_page():
-    #check page address
-    #if bad redirect to '/' with error message
-    #if not in db
+    # check page address
+    # if bad redirect to '/' with error message
+    # if not in db
     #   add to db
-    #redirect to page of page
+    # redirect to page of page
     db = Connector(database.get_db())
     address = request.form.get('url')
     errors = validate_url(address)
@@ -48,17 +55,18 @@ def post_add_page():
         for error in errors:
             flash(error, category='alert-danger')
         messages = get_flashed_messages(with_categories=True)
-        return render_template('index.html', messages=messages, url_text=address), 402
+        return render_template('index.html', messages=messages,
+                               url_text=address), 402
 
     address = cut_netloc(address)
     page = db.get_page(address)
     if page:
-        flash("Страница уже существует", category='alert-info')
+        flash('Страница уже существует', category='alert-info')
         return redirect(url_for('get_url_page', page_id=page.page_id), code=302)
 
     db.add_page(SEOPage(address))
     page = db.get_page(address)
-    flash("Страница успешно добавлена", category='alert-success')
+    flash('Страница успешно добавлена', category='alert-success')
     return redirect(url_for('get_url_page', page_id=page.page_id), code=302)
 
 

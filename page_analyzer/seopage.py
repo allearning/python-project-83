@@ -1,10 +1,16 @@
 import datetime
+
 import requests
 from bs4 import BeautifulSoup
 from page_analyzer.seocheck import SEOCheck
 
+
 class SEOPage:
-    def __init__(self, name: str, page_id: int = 0, created_at: datetime.date = None) -> None:
+    def __init__(self,
+                 name: str,
+                 page_id: int = 0,
+                 created_at: datetime.date = None,
+                 ) -> None:
         self.page_id = page_id
         self.name = name
         if not created_at:

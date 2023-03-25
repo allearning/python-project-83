@@ -2,6 +2,7 @@
 """
 from typing import List
 from urllib.parse import urlparse
+
 import validators
 
 
